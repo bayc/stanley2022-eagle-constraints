@@ -55,5 +55,5 @@ ax2.set_title("5% eagle probability threshold",y=p,fontsize=8)
 ax3.set_title("10% eagle probability threshold",y=p,fontsize=8)
 plt.subplots_adjust(top=0.99,right=0.99,left=0.01,bottom=0.01,wspace=0.05)
 
-plt.savefig("figures/layouts.pdf",transparent=True)
+# plt.savefig("figures/layouts.pdf",transparent=True)
 plt.show()

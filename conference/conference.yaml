@@ -13,7 +13,7 @@ logging:
 
 solver:
   type: turbine_grid
-  turbine_grid_points: 3
+  turbine_grid_points: 1
 
 farm:
   layout_x:
@@ -25,7 +25,7 @@ farm:
   - 0.0
   - 0.0
   turbine_type:
-  - nrel_5MW
+  - iea_10MW
 
 flow_field:
   air_density: 1.225
