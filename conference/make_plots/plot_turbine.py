@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-plt.style.use('presentation')
+# plt.style.use('presentation')
 import numpy as np
 import scipy
 from wind_design_tools import plotting_functions

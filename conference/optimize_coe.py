@@ -8,7 +8,9 @@ import yaml
 
 from floris.tools import FlorisInterface
 from shapely.geometry import Polygon, MultiPolygon
-from wind_design_tools import plotting_functions, pack_turbs, optimize_gf
+# from wind_design_tools import plotting_functions, pack_turbs, optimize_gf
+from pack_turbs import PackTurbines
+from greedy import GreedyAlgorithm
 
 
 def objective_function(design_variables, args):
@@ -21,8 +23,10 @@ def objective_function(design_variables, args):
 
     if len(turbine_x) == 0:
         return 1E3
+    elif len(turbine_x) > 7:
+        return 1E3
     else:
-        fi.reinitialize( layout=( turbine_x, turbine_y ) )
+        fi.reinitialize( layout_x=turbine_x, layout_y=turbine_y )
         fi.calculate_wake()
         turbine_powers = fi.get_turbine_powers()/1E3 # kW to MW
         farm_power = np.sum(turbine_powers)
@@ -63,7 +67,7 @@ for j in range(len(lowy_array)):
 
         threshold = threshold_array[k]
         threshold = np.round(threshold,2)
-        with open('C:/Users/PJ.Stanley/PJ/Projects/stanley2022-eagle-constraints/abstract/geometry/polygons_T%s'%threshold, "rb") as poly_file:
+        with open('geometry/polygons_T%s'%threshold, "rb") as poly_file:
             loaded_polygon = pickle.load(poly_file)
 
         lowx = 0.0
@@ -83,7 +87,7 @@ for j in range(len(lowy_array)):
         # existing_turbines[:, 0] = possible_x[:]
         # existing_turbines[:, 1] = possible_y[:]
 
-        turbine_packing = pack_turbs.PackTurbines(min_spacing*rotor_diameter, limited_polygon, weight_x=1E6)
+        turbine_packing = PackTurbines(min_spacing*rotor_diameter, limited_polygon, weight_x=1E6)
         # turbine_packing.pack_turbines_poly(existing_turbines=existing_turbines)
         turbine_packing.pack_turbines_poly()
 
@@ -107,8 +111,8 @@ for j in range(len(lowy_array)):
             variable_type = np.append(variable_type,"int")
 
         args = (possible_x, possible_y, fi, turbine_rating, capex_function, om_function)
-        greedy_optimization = optimize_gf.GreedyAlgorithm(bits, bounds, variable_type, objective_function,
-                                                        consecutive_increases=3, start_index=0, start_ones=True,
+        greedy_optimization = GreedyAlgorithm(bits, bounds, variable_type, objective_function,
+                                                        consecutive_increases=3, start_index=0, start_ones=False,
                                                         args=args)
         greedy_optimization.optimize_greedy(print_progress=True)
 
